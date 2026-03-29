@@ -1,0 +1,154 @@
+Hospital Appointment Management System - Architecture Document
+
+1. Overview
+
+This project is a Java-based hospital appointment management system. It supports doctor and patient registration, appointment booking, cancellation, completion, and basic persistence via CSV files. The application is built as a desktop GUI application with a clear layered design.
+
+2. Architecture Style
+
+The system uses a layered architecture with the following main layers:
+
+- Presentation Layer
+- Service Layer
+- Repository Layer
+- Persistence Layer
+- Domain Layer
+- Utility Layer
+
+Each layer has a focused responsibility and depends only on lower layers.
+
+3. Component Breakdown
+
+3.1 Presentation Layer
+
+- `HospitalAppointmentApp`
+  - Application bootstrap class.
+  - Loads data files from `src/data/`.
+  - Seeds demo doctors and patients if CSV files are missing.
+  - Initializes `HospitalRegistry`, `FileBackedAppointmentRepository`, `DefaultSchedulingService`, and `HospitalAppointmentGui`.
+  - Starts the Swing UI.
+
+- `HospitalAppointmentGui`
+  - Swing-based desktop interface.
+  - Provides appointment booking forms, filterable appointment table, and registration panels.
+  - Supports doctor and patient registration, appointment status changes, and refresh actions.
+  - Loads doctor and patient lists from the service and repository via dependency injection.
+
+3.2 Service Layer
+
+- `SchedulingService` (interface)
+  - Defines application business operations: book, cancel, complete, listForDoctor, listForPatient, getSlotMinutes.
+
+- `DefaultSchedulingService`
+  - Implements appointment booking rules and status updates.
+  - Validates doctor and patient existence through `HospitalRegistry`.
+  - Prevents overlapping appointments for the same doctor.
+  - Uses `AppointmentRepository` for persistence operations.
+  - Encapsulates business logic separately from UI and data storage.
+
+- `HospitalRegistry`
+  - In-memory registry for `Doctor` and `Patient` objects.
+  - Validates entity existence and provides lookup operations.
+  - Exposes unmodifiable collections for listing doctors and patients.
+
+3.3 Repository Layer
+
+- `AppointmentRepository` (interface)
+  - Abstracts persistence operations for appointment entities.
+  - Supports `findAll`, `findById`, `save`, and shutdown semantics.
+
+- `FileBackedAppointmentRepository`
+  - Concrete repository implementation using CSV file persistence.
+  - Stores appointments in a file-backed data store.
+  - Allows future extension to alternate repository types without UI or service changes.
+
+3.4 Persistence Layer
+
+- `CsvDoctorStore`
+  - CSV file reader/writer for doctor data.
+  - Manages serialization and deserialization of `Doctor` objects.
+
+- `CsvPatientStore`
+  - CSV file reader/writer for patient data.
+  - Manages serialization and deserialization of `Patient` objects.
+
+- Appointment storage is also file-backed via `FileBackedAppointmentRepository` and uses CSV formatting.
+
+3.5 Domain Layer
+
+- `Appointment`
+  - Immutable appointment model with ID, patient ID, doctor ID, start/end times, and status.
+  - Defines overlap detection logic and status transitions.
+
+- `Doctor`, `Patient`, `User`
+  - Entities representing hospital users.
+  - `Doctor` and `Patient` extend or relate to common `User` behavior.
+  - Domain model encapsulates validation and role-specific details.
+
+- `Department`
+  - Enum representing doctor departments.
+
+- `AppointmentStatus`
+  - Enum for SCHEDULED, COMPLETED, CANCELLED statuses.
+
+3.6 Utility Layer
+
+- `IdGenerator`
+  - Generates unique sequential IDs for appointments, doctors, and patients.
+  - Initialized from maximum existing persisted IDs.
+
+4. Data Flow
+
+- Startup:
+  1. `HospitalAppointmentApp` loads CSV data for doctors and patients.
+  2. If files are absent, demo doctors and patients are created and persisted.
+  3. Existing appointments are loaded from appointment storage.
+  4. ID generators are seeded based on persisted entities.
+  5. Service and UI components are wired together.
+
+- User interaction:
+  1. The GUI triggers service operations.
+  2. `DefaultSchedulingService` validates input and business rules.
+  3. Repository saves appointment changes.
+  4. The GUI refreshes tables from repository and registry data.
+
+5. Design Principles
+
+- Separation of Concerns: UI logic is separate from business rules and storage.
+- Dependency Injection: Services and repositories are passed into the GUI and bootstrap code.
+- Immutable Domain Models: `Appointment` is immutable; status changes produce new instances.
+- Interface abstraction: `SchedulingService` and `AppointmentRepository` hide implementation details.
+- Exception handling: Custom exceptions encapsulate validation and domain errors.
+
+6. Extensibility
+
+The architecture supports easy extension:
+
+- Add new persistence implementations by adding new `AppointmentRepository` classes.
+- Add new UI channels (web, command line) without changing core business logic.
+- Add new domain features such as follow-ups or notifications by enhancing service and domain layers.
+
+7. Deployment and Execution
+
+- Project root: `term-ii-project-submission-owl2103/src`
+- Build script: `src/build.ps1`
+- Run script: `src/run.ps1`
+
+Execution steps:
+1. In PowerShell, navigate to `src`.
+2. Run `.uild.ps1` to compile sources to `out`.
+3. Run `.
+
+
+
+
+
+
+
+
+
+
+
+
+
+- `src/main/java/com/hospital/appointment/domain/Appointment.java`- `src/main/java/com/hospital/appointment/repository/FileBackedAppointmentRepository.java`- `src/main/java/com/hospital/appointment/persistence/CsvPatientStore.java`- `src/main/java/com/hospital/appointment/persistence/CsvDoctorStore.java`- `src/main/java/com/hospital/appointment/service/HospitalRegistry.java`- `src/main/java/com/hospital/appointment/service/DefaultSchedulingService.java`- `src/main/java/com/hospital/appointment/ui/HospitalAppointmentGui.java`- `src/main/java/com/hospital/appointment/HospitalAppointmentApp.java`8. Key Filesun.ps1` to launch the application.
