@@ -1,0 +1,55 @@
+# Hospital Appointment Management System
+
+## Project Title
+Hospital Appointment Management System
+
+## Problem Statement
+Hospitals and clinics need a reliable way to manage doctor schedules, patient registrations, and appointment bookings. Manual tracking of appointments often leads to double-bookings, missed follow-ups, and poor patient experience. This project provides a desktop Java application to manage hospital appointments with simple persistence and a user-friendly interface.
+
+## Target User
+- Hospital receptionists and front-desk staff
+- Clinic administrators
+- Doctors who need to view and manage their appointments
+- Patients who need appointment scheduling and follow-up tracking
+
+## Core Features
+- Register doctors and patients with unique IDs
+- Book appointments with validation against overlapping time slots
+- List appointments for a specific doctor or patient
+- Cancel or complete scheduled appointments
+- Save and load doctor, patient, and appointment data using CSV files
+- Desktop GUI implemented with Swing
+
+## OOP Concepts Used
+- Abstraction: Domain classes like `Appointment`, `Doctor`, `Patient`, and interfaces like `SchedulingService`
+- Inheritance: Shared behavior in `User` base class with `Doctor` and `Patient` subclasses
+- Polymorphism: Different `User` types provide role-specific descriptions and behavior
+- Exception Handling: Custom exceptions such as `HospitalException`, `EntityNotFoundException`, `SlotUnavailableException`, and `ValidationException`
+- Collections: Use of `Map` and `List` for in-memory registry and appointment filtering
+
+## Proposed Architecture Description
+This application follows a layered architecture:
+- Domain layer: immutable domain models (`Appointment`, `Doctor`, `Patient`, `User`, `AppointmentStatus`)
+- Persistence layer: CSV-based read/write support (`CsvDoctorStore`, `CsvPatientStore`, `FileBackedAppointmentRepository`)
+- Repository layer: `AppointmentRepository` abstraction and file-backed implementation
+- Service layer: `DefaultSchedulingService` handles appointment rules, validation, and business logic; `HospitalRegistry` manages doctor and patient lookup
+- UI layer: `HospitalAppointmentGui` presents a Swing interface for booking, filtering, and updating appointments
+- Bootstrap: `HospitalAppointmentApp` loads data, seeds demo values if needed, and wires components together
+
+## How to Run
+1. Open PowerShell in the project folder `term-ii-project-submission-owl2103\src`
+2. Run the build script:
+   - `.uild.ps1`
+3. Execute the application:
+   - `.
+
+
+
+
+
+
+
+
+
+
+- The system is designed for easy extension with additional persistence mechanisms or web/mobile front ends.- The GUI uses a 30-minute appointment slot length and prevents overlapping doctor bookings.- Sample data files are stored in `src/data/` as CSV files.## Notes- `java -cp out com.hospital.appointment.HospitalAppointmentApp`- `javac -encoding UTF-8 -d out src\main\java\com\hospital\appointment\**\*.java`Or manually compile and run:un.ps1`
