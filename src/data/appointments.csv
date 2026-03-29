@@ -1,0 +1,2 @@
+id,patientId,doctorId,start,end,status
+1001,102,1,2026-03-29T08:00,2026-03-29T08:30,SCHEDULED
